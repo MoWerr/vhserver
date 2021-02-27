@@ -16,7 +16,7 @@ ENV TERM="xterm" \
 RUN set -x && \
     dpkg --add-architecture i386 && \
     apt-get update && \
-    apt-get install -y --no-install-recommends --no-install-suggests \ 
+    DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends --no-install-suggests \ 
         locales \
         iproute2 \
         locales \
