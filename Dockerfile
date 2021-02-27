@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:cosmic
 
 # Default values are suitable for Unraid  usage
 # If you will mount drives manually and need to use other values,
