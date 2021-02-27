@@ -1,10 +1,16 @@
 #!/bin/bash
 
+## Calls specific linuxgsm command
+## Surpasses non-critical errors that are related to the 'unnamed' user
+function server_command {
+    $SERVERDIR/vhserver $* 2> >(grep -v "cannot find name for user ID $UID\|The argument to -user should not be empty" >&2)
+}
+
 ## Function that will stop the server
 ## And kill the child process
 function stop_server {
     echo " ---> Stop signal received. Stopping the server..."
-    $SERVERDIR/vhserver stop
+    server_command stop
     echo " ---> Server stopped gracefully."
 
     if [[ -v $child ]]; then
@@ -64,16 +70,16 @@ fi
 ## Install server
 if [[ ! -d ./serverfiles ]]; then
     echo " ---> Server files not found, installing the server..."
-    ./vhserver auto-install
+    server_command auto-install
 fi
 
 ## Update the server
 echo " ---> Updating the server..."
-./vhserver update
+server_command update 
 
 ## Start the server
 echo " ---> Starting the server..."
-./vhserver start
+server_command start 
 
 ## Make sure the container won't be stopped
 ## Run in the background for proper SIGTERM signal processing
