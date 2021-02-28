@@ -39,6 +39,7 @@ trap stop_server SIGINT SIGTERM
 check_dir $STEAMCMDDIR
 check_dir $LOCALDIR
 check_dir $CONFIGDIR
+check_dir $TEMPDIR
 
 ## Update the umask if necessary.
 if [[ -z $UMASK ]]; then
@@ -75,6 +76,9 @@ fi
 if [[ ! -d ./serverfiles ]]; then
     echo " ---> Server files not found, installing the server..."
     server_command auto-install
+    echo " ---> Server installed. Make sure that everything end up with success before continuation."
+    echo " ---> Set your configuration and start the container again."
+    exit 0
 fi
 
 ## Update the server
