@@ -1,9 +1,22 @@
 #!/bin/bash
 
-## Calls specific linuxgsm command
 ## Surpasses non-critical errors that are related to the 'unnamed' user
+function command {
+    $* 2> >(grep -v "cannot find name for user ID $UID\|The argument to -user should not be empty" >&2)
+}
+
+## Calls specific linuxgsm command
 function server_command {
-    $SERVERDIR/vhserver $* 2> >(grep -v "cannot find name for user ID $UID\|The argument to -user should not be empty" >&2)
+    command $SERVERDIR/vhserver $* 
+}
+
+## Checks if given directory exists
+## If not, it will create one
+function check_dir {
+    if [[ ! -d "$1" ]]; then
+        echo " ---> $1 directory not found, creating one..."
+        mkdir -p "$1"
+    fi
 }
 
 ## Function that will stop the server
@@ -23,18 +36,9 @@ trap stop_server SIGINT SIGTERM
 
 ## Check for missing directories.
 ## It can happen when user will mount his own volumes.
-if [[ ! -d $STEAMCMDDIR ]]; then
-    echo " ---> SteamCMD directory not found, creating one..."
-    mkdir -p $STEAMCMDDIR
-fi
-if [[ ! -d $LOCALDIR ]]; then
-    echo " ---> .local directory not found, creating one..."
-    mkdir -p $LOCALDIR
-fi
-if [[ ! -d $CONFIGDIR ]]; then
-    echo " ---> .config directory not found, creating one..."
-    mkdir -p $CONFIGDIR
-fi
+check_dir $STEAMCMDDIR
+check_dir $LOCALDIR
+check_dir $CONFIGDIR
 
 ## Update the umask if necessary.
 if [[ -z $UMASK ]]; then
@@ -64,7 +68,7 @@ fi
 ## Create server instance
 if [[ ! -f ./vhserver ]]; then
     echo " ---> Server instance not found, creating one..."
-    ./linuxgsm.sh vhserver
+    command ./linuxgsm.sh vhserver
 fi
 
 ## Install server
