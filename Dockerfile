@@ -16,7 +16,7 @@ ENV TERM="xterm" \
 RUN set -x && \
     dpkg --add-architecture i386 && \
     apt-get update && \
-    apt-get install -y --no-install-recommends --no-install-suggests \ 
+    DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends --no-install-suggests \ 
         locales \
         iproute2 \
         locales \
@@ -58,6 +58,7 @@ ENV STEAMDIR="${HOME}/steamcmd" \
 # Folders with 'specific' steam locations
 ENV STEAMCMDDIR="${STEAMDIR}/steamcmd" \
     LOCALDIR="${STEAMDIR}/.local" \
+    TEMPDIR="${STEAMDIR}/tmp" \
     # Folder with valheim configuration
     CONFIGDIR="${SERVERDIR}/.config"
 
@@ -77,6 +78,8 @@ RUN set -x && \
     # Make links for steam directories so the lgsm will able to find them
     ln -s ${STEAMDIR} ${HOME}/.steam && \
     ln -s ${LOCALDIR} ${HOME}/.local && \
+    # Make links for temp folder, so the applications will be able to use it
+    rm -rf /tmp && ln -s ${TEMPDIR} /tmp && \
     # Make link for configuration files for the vhserver itself
     ln -s ${CONFIGDIR} ${HOME}/.config
 

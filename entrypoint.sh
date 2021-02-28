@@ -1,10 +1,29 @@
 #!/bin/bash
 
+## Surpasses non-critical errors that are related to the 'unnamed' user
+function command {
+    $* 2> >(grep -v "cannot find name for user ID $UID\|The argument to -user should not be empty" >&2)
+}
+
+## Calls specific linuxgsm command
+function server_command {
+    command $SERVERDIR/vhserver $* 
+}
+
+## Checks if given directory exists
+## If not, it will create one
+function check_dir {
+    if [[ ! -d "$1" ]]; then
+        echo " ---> $1 directory not found, creating one..."
+        mkdir -p "$1"
+    fi
+}
+
 ## Function that will stop the server
 ## And kill the child process
 function stop_server {
     echo " ---> Stop signal received. Stopping the server..."
-    $SERVERDIR/vhserver stop
+    server_command stop
     echo " ---> Server stopped gracefully."
 
     if [[ -v $child ]]; then
@@ -17,18 +36,10 @@ trap stop_server SIGINT SIGTERM
 
 ## Check for missing directories.
 ## It can happen when user will mount his own volumes.
-if [[ ! -d $STEAMCMDDIR ]]; then
-    echo " ---> SteamCMD directory not found, creating one..."
-    mkdir -p $STEAMCMDDIR
-fi
-if [[ ! -d $LOCALDIR ]]; then
-    echo " ---> .local directory not found, creating one..."
-    mkdir -p $LOCALDIR
-fi
-if [[ ! -d $CONFIGDIR ]]; then
-    echo " ---> .config directory not found, creating one..."
-    mkdir -p $CONFIGDIR
-fi
+check_dir $STEAMCMDDIR
+check_dir $LOCALDIR
+check_dir $CONFIGDIR
+check_dir $TEMPDIR
 
 ## Update the umask if necessary.
 if [[ -z $UMASK ]]; then
@@ -58,22 +69,25 @@ fi
 ## Create server instance
 if [[ ! -f ./vhserver ]]; then
     echo " ---> Server instance not found, creating one..."
-    ./linuxgsm.sh vhserver
+    command ./linuxgsm.sh vhserver
 fi
 
 ## Install server
 if [[ ! -d ./serverfiles ]]; then
     echo " ---> Server files not found, installing the server..."
-    ./vhserver auto-install
+    server_command auto-install
+    echo " ---> Server installed. Make sure that everything end up with success before continuation."
+    echo " ---> Set your configuration and start the container again."
+    exit 0
 fi
 
 ## Update the server
 echo " ---> Updating the server..."
-./vhserver update
+server_command update 
 
 ## Start the server
 echo " ---> Starting the server..."
-./vhserver start
+server_command start 
 
 ## Make sure the container won't be stopped
 ## Run in the background for proper SIGTERM signal processing
