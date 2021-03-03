@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-# Default values are suitable for Unraid  usage
+# Default values are suitable for Unraid usage
 # If you will mount drives manually and need to use other values,
 # you can alway specify '--user' argument during conatiner creation
 ARG UID=99
@@ -84,16 +84,17 @@ RUN set -x && \
     ln -s ${CONFIGDIR} ${HOME}/.config
 
 # Define volumes for steamcmd and server files
-# We define them at the beginning for better caching
 # They will be filed during the container runtime
 VOLUME [${STEAMDIR}]
 VOLUME [${SERVERDIR}]
 
 # Those ports will be used by the server
-# In order to join the server use port 2457
+# In order to join the server use port 2456 (in-game)
+# In order to add the server to favourite list use port 2457 (steam-app)
 EXPOSE 2456/udp
 EXPOSE 2457/udp
 
+# Switch to default user
 USER ${UID}:${GID}
 
 COPY entrypoint.sh /entrypoint.sh
