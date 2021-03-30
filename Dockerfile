@@ -34,7 +34,7 @@ RUN set -x && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-# Folders that will be used for LinuxGSM
+# Directory that will be used for LinuxGSM
 ENV SERVERDIR="/data/vhserver"
 
 # Define volume for all 'runtime' files
