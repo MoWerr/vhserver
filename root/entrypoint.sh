@@ -1,7 +1,7 @@
 #!/bin/bash
 source /common.sh
 
-# Shortcut for server command
+# Shortcut for server command.
 function vhserver {
     $SERVERDIR/vhserver $@
 }
