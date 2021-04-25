@@ -1,3 +1,4 @@
+import jetbrains.buildServer.configs.kotlin.v10.toExtId
 import jetbrains.buildServer.configs.kotlin.v2019_2.*
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.merge
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.dockerCommand
@@ -29,6 +30,13 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 
 version = "2020.2"
 
+project {
+    vcsRoot(DevRoot)
+
+    subProject(Stable)
+    subProject(Dev)
+}
+
 object DevRoot : GitVcsRoot({
     name = "Dev"
     url = "https://github.com/MoWerr/vhserver"
@@ -40,24 +48,28 @@ object DevRoot : GitVcsRoot({
     }
 })
 
-project {
-    vcsRoot(DevRoot)
-
-    subProject(Stable)
-    subProject(Dev)
-}
-
 object Stable : Project({
     name = "Stable"
 
-    buildType(Build)
+    buildType(BuildDockerImage("Build", DslContext.settingsRoot, "mowerr/vhserver:latest"))
 })
 
-object Build : BuildType({
-    name = "Build"
+object Dev : Project({
+    name = "Dev"
+
+    val buildTypes = sequential {
+        buildType(BuildDockerImage("Build", DevRoot, "mowerr/vhserver:dev"))
+        // buildType(PromoteToStable)
+    }.buildTypes()
+
+    buildTypes.forEach { buildType(it)  }
+})
+
+class BuildDockerImage(buildName: String, vcsRoot: VcsRoot, dockerPath: String) : BuildType({
+    name = buildName.toExtId()
 
     vcs {
-        root(DslContext.settingsRoot)
+        this.root(vcsRoot)
     }
 
     steps {
@@ -67,7 +79,7 @@ object Build : BuildType({
                 source = file {
                     path = "Dockerfile"
                 }
-                namesAndTags = "mowerr/vhserver:latest"
+                namesAndTags = dockerPath
             }
             param("dockerImage.platform", "linux")
         }
@@ -75,7 +87,7 @@ object Build : BuildType({
         dockerCommand {
             name = "Push image"
             commandType = push {
-                namesAndTags = "mowerr/vhserver:latest"
+                namesAndTags = dockerPath
             }
         }
     }
@@ -86,45 +98,6 @@ object Build : BuildType({
     }
 })
 
-object Dev : Project({
-    name = "Dev"
-
-    // buildType(PromoteToStable)
-    buildType(BuildDev)
-})
-
-object BuildDev : BuildType({
-    name = "Build"
-
-    vcs {
-        root(DevRoot)
-    }
-
-    steps {
-        dockerCommand {
-            name = "Build image"
-            commandType = build {
-                source = file {
-                    path = "Dockerfile"
-                }
-                namesAndTags = "mowerr/vhserver:dev"
-            }
-            param("dockerImage.platform", "linux")
-        }
-
-        dockerCommand {
-            name = "Push Image"
-            commandType = push {
-                namesAndTags = "mowerr/vhserver:dev"
-            }
-        }
-    }
-
-    triggers {
-        vcs {
-        }
-    }
-})
 /*
 object PromoteToStable : BuildType({
     name = "Promote"
