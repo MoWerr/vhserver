@@ -9,7 +9,7 @@ RUN set -x && \
     usermod -o -u ${UID} husky && \
     groupmod -o -g ${GID} husky
 
-# Update the package and install all dependencies.
+# Update the package and install all dependencies
 RUN set -x && \
     dpkg --add-architecture i386 && \
     apt-get update && \
