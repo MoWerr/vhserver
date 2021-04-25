@@ -45,6 +45,7 @@ object DevRoot : GitVcsRoot({
     name = "Dev"
     url = "https://github.com/MoWerr/vhserver"
     branch = "refs/heads/dev"
+    branchSpec = "+:refs/heads/(dev)"
     userForTags = "MoWer"
     authMethod = password {
         userName = "MoWerr"
