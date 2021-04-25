@@ -57,14 +57,8 @@ object Stable : Project({
 object Dev : Project({
     name = "Dev"
 
-    val buildTypes = sequential {
-        buildType(BuildDev)
-
-        buildType(PromoteToStable)
-            .dependencies.items[0].
-    }.buildTypes()
-
-    buildTypes.forEach { buildType(it)  }
+    buildType(BuildDev)
+    buildType(PromoteToStable)
 })
 
 open class BuildDockerImage(projectName: String, buildName: String, vcsRoot: VcsRoot, dockerPath: String) : BuildType({
