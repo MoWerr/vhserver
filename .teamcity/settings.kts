@@ -111,12 +111,6 @@ object PromoteToStable : BuildType({
         root(DevRoot)
     }
 
-    triggers {
-        vcs {
-            enabled = false
-        }
-    }
-
     features {
         merge {
             branchFilter = "+:<default>"
