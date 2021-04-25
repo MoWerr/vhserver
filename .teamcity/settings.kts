@@ -35,6 +35,10 @@ project {
 
     subProject(Stable)
     subProject(Dev)
+
+    subProjectsOrder = arrayListOf(
+        RelativeId("Stable"),
+        RelativeId("Dev"))
 }
 
 object DevRoot : GitVcsRoot({
