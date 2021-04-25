@@ -31,7 +31,7 @@ version = "2020.2"
 
 project {
     subProject(Stable)
-    //subProject(Dev)
+    subProject(Dev)
 }
 
 object Stable : Project({
@@ -73,10 +73,10 @@ object Build : BuildType({
     }
 })
 
-/*object Dev : Project({
+object Dev : Project({
     name = "Dev"
 
-    buildType(PromoteToStable)
+    // buildType(PromoteToStable)
     buildType(BuildDev)
 })
 
@@ -84,7 +84,7 @@ object BuildDev : BuildType({
     name = "Build"
 
     vcs {
-        root(HttpsGithubComMoWerrVhserverRefsHeadsDev)
+        root(DslContext.settingsRoot)
     }
 
     steps {
@@ -98,6 +98,7 @@ object BuildDev : BuildType({
             }
             param("dockerImage.platform", "linux")
         }
+
         dockerCommand {
             name = "Push Image"
             commandType = push {
@@ -108,11 +109,10 @@ object BuildDev : BuildType({
 
     triggers {
         vcs {
-            branchFilter = "+:<default>"
         }
     }
 })
-
+/*
 object PromoteToStable : BuildType({
     name = "Promote"
 
