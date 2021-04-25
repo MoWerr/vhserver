@@ -13,7 +13,7 @@ create(DslContext.projectId, GitVcsRoot({
     id("Dev")
     name = "Dev"
     url = "https://github.com/MoWerr/vhserver"
-    branch = "dev"
+    branch = "refs/heads/dev"
     userForTags = "MoWer"
     authMethod = password {
         userName = "MoWerr"
