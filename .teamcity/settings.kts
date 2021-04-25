@@ -51,21 +51,21 @@ object DevRoot : GitVcsRoot({
 object Stable : Project({
     name = "Stable"
 
-    buildType(BuildDockerImage("Stable","Build", DslContext.settingsRoot, "mowerr/vhserver:latest"))
+    buildType(BuildStable)
 })
 
 object Dev : Project({
     name = "Dev"
 
     val buildTypes = sequential {
-        buildType(BuildDockerImage("Dev","Build", DevRoot, "mowerr/vhserver:dev"))
-        // buildType(PromoteToStable)
+        buildType(BuildDev)
+        buildType(PromoteToStable)
     }.buildTypes()
 
     buildTypes.forEach { buildType(it)  }
 })
 
-class BuildDockerImage(projectName: String, buildName: String, vcsRoot: VcsRoot, dockerPath: String) : BuildType({
+open class BuildDockerImage(projectName: String, buildName: String, vcsRoot: VcsRoot, dockerPath: String) : BuildType({
     val id: String = "${projectName}_${buildName}";
     id (id.toExtId())
 
@@ -101,12 +101,14 @@ class BuildDockerImage(projectName: String, buildName: String, vcsRoot: VcsRoot,
     }
 })
 
-/*
+object BuildStable : BuildDockerImage("Stable","Build", DslContext.settingsRoot, "mowerr/vhserver:latest")
+object BuildDev : BuildDockerImage("Dev","Build", DevRoot, "mowerr/vhserver:dev")
+
 object PromoteToStable : BuildType({
     name = "Promote"
 
     vcs {
-        root(HttpsGithubComMoWerrVhserverRefsHeadsDev1)
+        root(DevRoot)
     }
 
     triggers {
@@ -121,12 +123,4 @@ object PromoteToStable : BuildType({
             destinationBranch = "main"
         }
     }
-
-    dependencies {
-        snapshot(BuildDev) {
-            runOnSameAgent = true
-            onDependencyFailure = FailureAction.FAIL_TO_START
-        }
-    }
 })
-*/
