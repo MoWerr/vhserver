@@ -45,8 +45,7 @@ object DevRoot : GitVcsRoot({
     name = "Dev"
     url = "https://github.com/MoWerr/vhserver"
     branch = "refs/heads/dev"
-    branchSpec = "+:refs/heads/(dev)\n" +
-            "+:refs/heads/main"
+    branchSpec = "+:refs/heads/*"
     userForTags = "MoWer"
     authMethod = password {
         userName = "MoWerr"
@@ -99,6 +98,7 @@ open class BuildDockerImage(projectName: String, buildName: String, vcsRoot: Vcs
 
     triggers {
         vcs {
+            branchFilter = "+:<default>"
         }
     }
 })
