@@ -40,7 +40,7 @@ object DevRoot : GitVcsRoot({
         password = "credentialsJSON:c936cbbd-a1d6-4a1d-87c0-48f933779af3"
     }
     param("oauthProviderId", "PROJECT_EXT_2")
-}
+})
 
 project {
     vcsRoot(DevRoot)
