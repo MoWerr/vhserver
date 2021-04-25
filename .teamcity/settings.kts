@@ -30,7 +30,6 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 version = "2020.2"
 
 object DevRoot : GitVcsRoot({
-    id("Dev")
     name = "Dev"
     url = "https://github.com/MoWerr/vhserver"
     branch = "refs/heads/dev"
@@ -39,7 +38,6 @@ object DevRoot : GitVcsRoot({
         userName = "MoWerr"
         password = "credentialsJSON:c936cbbd-a1d6-4a1d-87c0-48f933779af3"
     }
-    param("oauthProviderId", "PROJECT_EXT_2")
 })
 
 project {
