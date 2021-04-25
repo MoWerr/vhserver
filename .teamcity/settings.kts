@@ -99,7 +99,7 @@ object BuildDev : BuildType({
     name = "Build"
 
     vcs {
-        root(DslContext.settingsRoot)
+        root(DevRoot)
     }
 
     steps {
