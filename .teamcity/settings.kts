@@ -51,22 +51,25 @@ object DevRoot : GitVcsRoot({
 object Stable : Project({
     name = "Stable"
 
-    buildType(BuildDockerImage("Build", DslContext.settingsRoot, "mowerr/vhserver:latest"))
+    buildType(BuildDockerImage("Stable","Build", DslContext.settingsRoot, "mowerr/vhserver:latest"))
 })
 
 object Dev : Project({
     name = "Dev"
 
     val buildTypes = sequential {
-        buildType(BuildDockerImage("Build", DevRoot, "mowerr/vhserver:dev"))
+        buildType(BuildDockerImage("Dev","Build", DevRoot, "mowerr/vhserver:dev"))
         // buildType(PromoteToStable)
     }.buildTypes()
 
     buildTypes.forEach { buildType(it)  }
 })
 
-class BuildDockerImage(buildName: String, vcsRoot: VcsRoot, dockerPath: String) : BuildType({
-    name = buildName.toExtId()
+class BuildDockerImage(projectName: String, buildName: String, vcsRoot: VcsRoot, dockerPath: String) : BuildType({
+    val id: String = "${projectName}_${buildName}";
+    id (id.toExtId())
+
+    name = buildName
 
     vcs {
         this.root(vcsRoot)
