@@ -45,4 +45,5 @@ VOLUME ["/data"]
 # In order to add the server to favourite list use port 2457 (steam-app)
 EXPOSE 2456/udp 2457/udp
 
+# Capy all required files into the image
 COPY root/ /
