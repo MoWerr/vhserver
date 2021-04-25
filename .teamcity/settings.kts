@@ -59,7 +59,9 @@ object Dev : Project({
 
     val buildTypes = sequential {
         buildType(BuildDev)
+
         buildType(PromoteToStable)
+            .dependencies.items[0].
     }.buildTypes()
 
     buildTypes.forEach { buildType(it)  }
@@ -105,7 +107,7 @@ object BuildStable : BuildDockerImage("Stable","Build", DslContext.settingsRoot,
 object BuildDev : BuildDockerImage("Dev","Build", DevRoot, "mowerr/vhserver:dev")
 
 object PromoteToStable : BuildType({
-    name = "Promote"
+    name = "Promote to Stable"
 
     vcs {
         root(DevRoot)
@@ -121,6 +123,13 @@ object PromoteToStable : BuildType({
         merge {
             branchFilter = "+:<default>"
             destinationBranch = "main"
+        }
+    }
+
+    dependencies {
+        snapshot(BuildDev) {
+            runOnSameAgent = true
+            onDependencyFailure = FailureAction.FAIL_TO_START
         }
     }
 })
