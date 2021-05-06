@@ -30,6 +30,9 @@ ENV SERVERDIR="/data/vhserver" \
     # Add server directory to PATH
     PATH=/data/vhserver:$PATH
 
+# Tell s6 overlay to wait longer for server to stop
+ENV S6_KILL_FINISH_MAXTIME=300000
+
 # Define volume for all 'runtime' files
 VOLUME ["/data"]
 
@@ -37,6 +40,9 @@ VOLUME ["/data"]
 # In order to join the server use port 2456 (in-game)
 # In order to add the server to favourite list use port 2457 (steam-app)
 EXPOSE 2456/udp 2457/udp
+
+# Monitor whether the server is up and running
+HEALTHCHECK --interval=30s CMD ["/healthcheck.sh"]
 
 # Capy all required files into the image
 COPY root/ /
