@@ -5,8 +5,8 @@ msg "Stop signal received. Stopping the server..."
 s6-setuidgid husky vhserver stop
 
 if [[ $? != 0 ]]; then
-    msg "Server stopped gracefully."
-else
     err "Server couldn't be stopped gracefully!"
     exit 1
+else
+    msg "Server stopped gracefully."
 fi
