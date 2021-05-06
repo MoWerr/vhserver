@@ -43,7 +43,7 @@ VOLUME ["/data"]
 EXPOSE 2456/udp 2457/udp
 
 # Monitor whether the server is up and running
-HEALTHCHECK --interval=30s CMD ["/healthcheck.sh"]
+HEALTHCHECK --interval=5m --start-period=10m CMD ["/healthcheck.sh"]
 
 # Capy all required files into the image
 COPY root/ /
