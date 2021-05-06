@@ -1,14 +1,5 @@
 FROM mowerr/ubuntu-base:18.04
 
-# Default user and user group will be adapted to those values
-ARG UID=1000
-ARG GID=1000
-
-# Adapt UID and GID values
-RUN set -x && \
-    usermod -o -u ${UID} husky && \
-    groupmod -o -g ${GID} husky
-
 # Update the package and install all dependencies
 RUN set -x && \
     dpkg --add-architecture i386 && \
@@ -36,6 +27,7 @@ RUN set -x && \
 
 # Directory that will be used for LinuxGSM
 ENV SERVERDIR="/data/vhserver" \
+    # Add server directory to PATH
     PATH=/data/vhserver:$PATH
 
 # Define volume for all 'runtime' files
