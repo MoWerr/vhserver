@@ -35,7 +35,8 @@ RUN set -x && \
     rm -rf /var/lib/apt/lists/*
 
 # Directory that will be used for LinuxGSM
-ENV SERVERDIR="/data/vhserver"
+ENV SERVERDIR="/data/vhserver" \
+    PATH=/data/vhserver:$PATH
 
 # Define volume for all 'runtime' files
 VOLUME ["/data"]
