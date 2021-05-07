@@ -1,0 +1,4 @@
+*/30 * * * * /data/vhserver/vhserver update >> /data/cronjobs.log 2>&1
+30 4 * * *  /data/vhserver/vhserver force-update >> /data/cronjobs.log 2>&1
+0 0 * * 0 /data/vhserver/vhserver update-lgsm >> /data/cronjobs.log 2>&1
+# This line makes a valid cron
