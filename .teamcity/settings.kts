@@ -84,6 +84,7 @@ open class BuildDockerImage(projectName: String, buildName: String, vcsRoot: Vcs
                     path = "Dockerfile"
                 }
                 namesAndTags = dockerPath
+                commandArgs = "--pull"
             }
             param("dockerImage.platform", "linux")
         }
