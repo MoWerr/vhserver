@@ -1,4 +1,0 @@
-#!/usr/bin/with-contenv bash
-
-crontab -u husky /etc/crontabs/husky
-cron -f -l
